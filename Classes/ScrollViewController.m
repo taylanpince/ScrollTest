@@ -131,10 +131,11 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)aScrollView {
 	activePhotoIndex = floorf(scrollView.contentOffset.x / scrollView.frame.size.width);
+	
+	[thumbsView selectThumb:activePhotoIndex + 1];
 }
 
 - (void)didTapOnThumbnailWithIndex:(int)thumbIndex {
-	NSLog(@"LOAD THUMB: %d", thumbIndex);
 	[self goToPage:thumbIndex];
 }
 

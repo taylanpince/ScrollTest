@@ -1,0 +1,14 @@
+ScrollTest
+==========
+
+A basic iPad project to put together an application that mimics Apple's own
+photo viewer. Currently supports:
+
+* Queued loading for optimized view recycling
+* Thumbnails browser in a toolbar
+* Proper rotation support (images rotate around their own center)
+
+This project is meant as a test bed for UI behavior, image loads are extremely
+suboptimal. If you take any parts of the code, please make sure you roll
+your own image loader that will handle fetching, resizing and caching in a 
+background thread.
