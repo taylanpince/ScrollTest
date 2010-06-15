@@ -137,12 +137,10 @@
 }
 
 - (void)fetchCompleteWithData:(NSData *)data {
-	NSLog(@"FETCH COMPLETE");
 	[self performSelectorInBackground:@selector(parseImageFromData:) withObject:data];
 }
 
 - (void)parseCompleteWithImage:(UIImage *)image {
-	NSLog(@"PARSE COMPLETE");
 	[delegate imageRequestDidSucceedWithImage:image cellIndex:cellIndex];
 }
 

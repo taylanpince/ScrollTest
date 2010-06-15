@@ -47,8 +47,8 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 
 - (void)selectThumb:(int)thumbIndex {
 	if (selectedThumbIndex != thumbIndex) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.15];
+		//[UIView beginAnimations:nil context:NULL];
+		//[UIView setAnimationDuration:0.15];
 		
 		UIView *oldView = [self viewWithTag:selectedThumbIndex];
 		UIView *newView = [self viewWithTag:thumbIndex];
@@ -58,7 +58,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 		oldView.transform = CGAffineTransformIdentity;
 		newView.transform = scaleTransform;
 		
-		[UIView commitAnimations];
+		//[UIView commitAnimations];
 
 		[self bringSubviewToFront:newView];
 		
@@ -68,7 +68,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 
 - (void)didPanOverThumbnails:(id)sender {
 	CGPoint touchPoint = [(UIPanGestureRecognizer *)sender locationInView:self];
-	UIView *tappedView = [self hitTest:touchPoint withEvent:nil];
+	UIView *tappedView = [self hitTest:CGPointMake(touchPoint.x, self.frame.size.height / 2) withEvent:nil];
 	
 	if (tappedView != nil && tappedView != self) {
 		[self selectThumb:tappedView.tag];
@@ -78,7 +78,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 
 - (void)didTapOnThumbnail:(id)sender {
 	CGPoint touchPoint = [(UITapGestureRecognizer *)sender locationInView:self];
-	UIView *tappedView = [self hitTest:touchPoint withEvent:nil];
+	UIView *tappedView = [self hitTest:CGPointMake(touchPoint.x, self.frame.size.height / 2) withEvent:nil];
 	
 	if (tappedView != nil && tappedView != self) {
 		[self selectThumb:tappedView.tag];
@@ -135,12 +135,10 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 }
 
 - (void)imageRequestDidFailForCellIndex:(NSIndexPath *)indexPath {
-	NSLog(@"DID FAIL");
+	NSLog(@"DID FAIL: %d", indexPath.row);
 }
 
 - (void)imageRequestDidSucceedWithImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
-	NSLog(@"DID SUCCEED: %d", indexPath.row);
-	
 	[(UIImageView *)[self viewWithTag:(indexPath.row + 1)] setImage:image];
 	[self getThumbForIndex:(indexPath.row + 1)];
 }

@@ -272,7 +272,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
+									<integer>7</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -309,7 +309,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>EC40759C11C5625900072312</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>ImageRequest.m</string>
+								<string>ScrollViewController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -317,23 +317,24 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>EC40759D11C5625900072312</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>ImageRequest.m</string>
+										<string>ScrollViewController.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EC84CDB411C7F13C00E67E10</string>
+										<string>EC84CE1211C7F58800E67E10</string>
 										<key>history</key>
 										<array>
 											<string>ECB09D1E11C5806700F61866</string>
 											<string>EC84CBB311C73CBB00E67E10</string>
-											<string>EC84CC2611C7465200E67E10</string>
-											<string>EC84CD0F11C7E66100E67E10</string>
 											<string>EC84CD3511C7E92600E67E10</string>
 											<string>EC84CD3611C7E92600E67E10</string>
-											<string>EC84CD9011C7ED5D00E67E10</string>
 											<string>EC84CD9D11C7EEF400E67E10</string>
-											<string>EC84CDB111C7F13B00E67E10</string>
-											<string>EC84CDB211C7F13B00E67E10</string>
+											<string>EC84CDB811C7F1CE00E67E10</string>
+											<string>EC84CDC211C7F34A00E67E10</string>
+											<string>EC84CDDF11C7F48C00E67E10</string>
+											<string>EC84CDFD11C7F52600E67E10</string>
+											<string>EC84CE0F11C7F58700E67E10</string>
+											<string>EC84CE1011C7F58700E67E10</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -424,7 +425,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{0, 0}, {568, 405}}</string>
+										<string>{{10, 27}, {1149, -27}}</string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -654,6 +655,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>EC84CDD211C7F43300E67E10</string>
+		<string>EC84CDD311C7F43300E67E10</string>
 		<string>/Users/taylan/Downloads/WWDC/ScrollTest/ScrollTest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
