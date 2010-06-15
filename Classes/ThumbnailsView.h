@@ -6,17 +6,23 @@
 //  Copyright 2010 Hippo Foundry. All rights reserved.
 //
 
+#import "ImageRequest.h"
+
 
 @protocol ThumbnailsViewDelegate;
 
-@interface ThumbnailsView : UIView {
+@interface ThumbnailsView : UIView <ImageRequestDelegate> {
 	NSArray *thumbnails;
 	NSInteger selectedThumbIndex;
+	
+	ImageRequest *thumbRequest;
 	
 	id <ThumbnailsViewDelegate> delegate;
 }
 
 @property (nonatomic, retain) NSArray *thumbnails;
+
+@property (nonatomic, retain) ImageRequest *thumbRequest;
 
 @property (nonatomic, assign) id <ThumbnailsViewDelegate> delegate;
 

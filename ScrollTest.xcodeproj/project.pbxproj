@@ -16,6 +16,7 @@
 		EC4076AC11C562D800072312 /* ScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC4076AB11C562D800072312 /* ScrollViewController.m */; };
 		EC4076AF11C5633100072312 /* ScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC4076AE11C5633100072312 /* ScrollView.m */; };
 		EC40791611C5770700072312 /* ThumbnailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC40791511C5770700072312 /* ThumbnailsView.m */; };
+		EC84CD0A11C7E39200E67E10 /* ImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EC84CD0911C7E39200E67E10 /* ImageRequest.m */; };
 		ECB09EAA11C5865400F61866 /* hero.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ECB09E2811C5865400F61866 /* hero.jpg */; };
 		ECB09EAB11C5865400F61866 /* IMG_0218.PNG in Resources */ = {isa = PBXBuildFile; fileRef = ECB09E2911C5865400F61866 /* IMG_0218.PNG */; };
 		ECB09EAC11C5865400F61866 /* IMG_0219.PNG in Resources */ = {isa = PBXBuildFile; fileRef = ECB09E2A11C5865400F61866 /* IMG_0219.PNG */; };
@@ -165,6 +166,8 @@
 		EC4076AE11C5633100072312 /* ScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollView.m; sourceTree = "<group>"; };
 		EC40791411C5770700072312 /* ThumbnailsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailsView.h; sourceTree = "<group>"; };
 		EC40791511C5770700072312 /* ThumbnailsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailsView.m; sourceTree = "<group>"; };
+		EC84CD0811C7E39200E67E10 /* ImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageRequest.h; sourceTree = "<group>"; };
+		EC84CD0911C7E39200E67E10 /* ImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageRequest.m; sourceTree = "<group>"; };
 		ECB09E2811C5865400F61866 /* hero.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hero.jpg; sourceTree = "<group>"; };
 		ECB09E2911C5865400F61866 /* IMG_0218.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IMG_0218.PNG; sourceTree = "<group>"; };
 		ECB09E2A11C5865400F61866 /* IMG_0219.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IMG_0219.PNG; sourceTree = "<group>"; };
@@ -314,6 +317,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EC84CD0811C7E39200E67E10 /* ImageRequest.h */,
+				EC84CD0911C7E39200E67E10 /* ImageRequest.m */,
 				1D3623240D0F684500981E51 /* ScrollTestAppDelegate.h */,
 				1D3623250D0F684500981E51 /* ScrollTestAppDelegate.m */,
 				EC4076AA11C562D800072312 /* ScrollViewController.h */,
@@ -700,6 +705,7 @@
 				EC4076AC11C562D800072312 /* ScrollViewController.m in Sources */,
 				EC4076AF11C5633100072312 /* ScrollView.m in Sources */,
 				EC40791611C5770700072312 /* ThumbnailsView.m in Sources */,
+				EC84CD0A11C7E39200E67E10 /* ImageRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

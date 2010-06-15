@@ -7,14 +7,16 @@
 //
 
 #import "ScrollView.h"
+#import "ImageRequest.h"
 #import "ThumbnailsView.h"
 
 
-@interface ScrollViewController : UIViewController <UIScrollViewDelegate, ScrollViewDataSource, ThumbnailsViewDelegate> {
+@interface ScrollViewController : UIViewController <UIScrollViewDelegate, ScrollViewDataSource, ThumbnailsViewDelegate, ImageRequestDelegate> {
 	ScrollView *scrollView;
 	ThumbnailsView *thumbsView;
 	
 	NSArray *photos;
+	NSMutableArray *imageRequests;
 	NSUInteger activePhotoIndex;
 }
 
@@ -22,5 +24,6 @@
 @property (nonatomic, retain) ThumbnailsView *thumbsView;
 
 @property (nonatomic, readonly) NSArray *photos;
+@property (nonatomic, retain) NSMutableArray *imageRequests;
 
 @end

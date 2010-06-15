@@ -14,6 +14,7 @@
 @interface ThumbnailsView (PrivateMethods)
 - (void)didTapOnThumbnail:(id)sender;
 - (void)didPanOverThumbnails:(id)sender;
+- (void)getThumbForIndex:(int)thumbIndex;
 @end
 
 
@@ -23,7 +24,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 
 @implementation ThumbnailsView
 
-@synthesize thumbnails, delegate;
+@synthesize thumbnails, thumbRequest, delegate;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -93,9 +94,8 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 	int count = 1;
 
 	for (NSString *thumb in thumbnails) {
-		UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[thumb lastPathComponent]]];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, PHOTO_WIDTH, PHOTO_HEIGHT)];
 		
-		[imageView setFrame:CGRectMake(0.0, 0.0, PHOTO_WIDTH, PHOTO_HEIGHT)];
 		[imageView setUserInteractionEnabled:YES];
 		[imageView setContentMode:UIViewContentModeScaleAspectFit];
 		[imageView setBackgroundColor:[UIColor blackColor]];
@@ -112,8 +112,37 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 		count++;
 	}
 	
+	[self getThumbForIndex:0];
 	[self setNeedsLayout];
 	[self selectThumb:1];
+}
+
+- (void)getThumbForIndex:(int)thumbIndex {
+	if (thumbIndex >= [thumbnails count]) {
+		return;
+	}
+	
+	[thumbRequest release];
+	
+	NSString *thumbURL = [thumbnails objectAtIndex:thumbIndex];
+
+	thumbRequest = [[ImageRequest alloc] initWithIdentifier:[thumbURL lastPathComponent] cellIndex:[NSIndexPath indexPathForRow:thumbIndex inSection:0]];
+	
+	[thumbRequest setDelegate:self];
+	[thumbRequest setExactFit:YES];
+	[thumbRequest setTargetSize:CGSizeMake(PHOTO_WIDTH, PHOTO_HEIGHT)];
+	[thumbRequest sendRequestForURL:[NSURL fileURLWithPath:thumbURL]];
+}
+
+- (void)imageRequestDidFailForCellIndex:(NSIndexPath *)indexPath {
+	NSLog(@"DID FAIL");
+}
+
+- (void)imageRequestDidSucceedWithImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
+	NSLog(@"DID SUCCEED: %d", indexPath.row);
+	
+	[(UIImageView *)[self viewWithTag:(indexPath.row + 1)] setImage:image];
+	[self getThumbForIndex:(indexPath.row + 1)];
 }
 
 - (void)layoutSubviews {
@@ -148,6 +177,8 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 
 - (void)dealloc {
 	[thumbnails release];
+	[thumbRequest abortConnection];
+	[thumbRequest release];
     [super dealloc];
 }
 
