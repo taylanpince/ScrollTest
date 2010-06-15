@@ -11,6 +11,10 @@
 
 @interface ScrollViewController (PrivateMethods)
 - (void)goToPage:(int)page;
+- (void)didTapOnPhoto:(id)sender;
+- (void)hideInterface;
+- (void)showInterface;
+- (void)transitionDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 @end
 
 
@@ -44,6 +48,12 @@
 	
 	[self.view addSubview:scrollView];
 	
+	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapOnPhoto:)];
+	
+	[scrollView addGestureRecognizer:tapGesture];
+	
+	[tapGesture release];
+	
 	[scrollView reloadDataWithNewContentSize:CGSizeMake(dimensions.width * [self.photos count], dimensions.height)];
 	
 	thumbsView = [[ThumbnailsView alloc] initWithFrame:CGRectMake(0.0, 0.0, dimensions.width - 20.0, 52.0)];
@@ -68,12 +78,54 @@
 	}
 }
 
+- (void)didTapOnPhoto:(id)sender {
+	if (self.navigationController.navigationBarHidden) {
+		[self showInterface];
+	} else {
+		[self hideInterface];
+	}
+}
+
 - (void)goToPage:(int)page {
 	if (page < [self.photos count]) {
 		[scrollView setContentOffset:CGPointMake(page * scrollView.frame.size.width, 0.0)];
 		
 		activePhotoIndex = page;
 	}
+}
+
+- (void)hideInterface {
+	if (!self.navigationController.navigationBarHidden) {
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:0.5];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(transitionDidStop:finished:context:)];
+		[self.navigationController.navigationBar setAlpha:0.0];
+		[self.navigationController.toolbar setAlpha:0.0];
+		[UIView commitAnimations];
+		
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+	}
+}
+
+- (void)showInterface {
+	if (self.navigationController.navigationBarHidden) {
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+
+		[self.navigationController setNavigationBarHidden:NO animated:NO];
+		[self.navigationController setToolbarHidden:NO animated:NO];
+		
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:0.5];
+		[self.navigationController.navigationBar setAlpha:1.0];
+		[self.navigationController.toolbar setAlpha:1.0];
+		[UIView commitAnimations];
+	}
+}
+
+- (void)transitionDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+	[self.navigationController setNavigationBarHidden:YES animated:NO];
+	[self.navigationController setToolbarHidden:YES animated:NO];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -122,12 +174,14 @@
 	if (photoView == nil) {
 		photoView = [[[UIImageView alloc] initWithFrame:CGRectZero] autorelease];
 		
-		[photoView setContentMode:UIViewContentModeCenter];
+		[photoView setContentMode:UIViewContentModeScaleAspectFit];
 	}
 	
 	if (page >= [self.photos count]) {
 		return nil;
 	}
+	
+	[photoView setImage:[thumbsView thumbForIndex:page]];
 	
 	NSString *photoPath = [self.photos objectAtIndex:page];
 	ImageRequest *fetchRequest = [[ImageRequest alloc] initWithIdentifier:[photoPath lastPathComponent] cellIndex:[NSIndexPath indexPathForRow:page inSection:0]];
@@ -142,9 +196,15 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)aScrollView {
-	activePhotoIndex = floorf(scrollView.contentOffset.x / scrollView.frame.size.width);
+	NSUInteger newPhotoIndex = floorf(scrollView.contentOffset.x / scrollView.frame.size.width);
 	
-	[thumbsView selectThumb:activePhotoIndex + 1];
+	if (activePhotoIndex != newPhotoIndex) {
+		activePhotoIndex = newPhotoIndex;
+		
+		[thumbsView selectThumb:activePhotoIndex + 1];
+		
+		[self hideInterface];
+	}
 }
 
 - (void)abortAllRequests {

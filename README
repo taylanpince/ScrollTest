@@ -14,3 +14,6 @@ photo viewer. Currently supports:
 Current memory consumption is around 15MB with a 130 image gallery. Going to
 work on improving this a bit more, but it's pretty good as is. Consumption
 doesn't grow over time, no matter how many images you have.
+
+There are still a few quirks with thumbnail browsing (on the device, it doesn't
+jump as fast as I would like it to).

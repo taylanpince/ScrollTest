@@ -66,6 +66,16 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 	}
 }
 
+- (UIImage *)thumbForIndex:(int)thumbIndex {
+	UIImageView *thumbView = (UIImageView *)[self viewWithTag:thumbIndex + 1];
+	
+	if (thumbView) {
+		return thumbView.image;
+	} else {
+		return nil;
+	}
+}
+
 - (void)didPanOverThumbnails:(id)sender {
 	CGPoint touchPoint = [(UIPanGestureRecognizer *)sender locationInView:self];
 	UIView *tappedView = [self hitTest:CGPointMake(touchPoint.x, self.frame.size.height / 2) withEvent:nil];
@@ -129,7 +139,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 	thumbRequest = [[ImageRequest alloc] initWithIdentifier:[thumbURL lastPathComponent] cellIndex:[NSIndexPath indexPathForRow:thumbIndex inSection:0]];
 	
 	[thumbRequest setDelegate:self];
-	[thumbRequest setExactFit:YES];
+	[thumbRequest setExactFit:NO];
 	[thumbRequest setTargetSize:CGSizeMake(PHOTO_WIDTH, PHOTO_HEIGHT)];
 	[thumbRequest sendRequestForURL:[NSURL fileURLWithPath:thumbURL]];
 }

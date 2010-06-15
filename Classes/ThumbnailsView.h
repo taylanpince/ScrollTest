@@ -27,6 +27,7 @@
 @property (nonatomic, assign) id <ThumbnailsViewDelegate> delegate;
 
 - (void)selectThumb:(int)thumbIndex;
+- (UIImage *)thumbForIndex:(int)thumbIndex;
 
 @end
 
