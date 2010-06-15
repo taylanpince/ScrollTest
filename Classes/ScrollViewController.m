@@ -105,9 +105,9 @@
 	
 	NSMutableArray *pathsList = [[NSMutableArray alloc] init];
 	
-	[pathsList addObjectsFromArray:[[[NSBundle mainBundle] pathsForResourcesOfType:@"PNG" inDirectory:nil] retain]];
-	[pathsList addObjectsFromArray:[[[NSBundle mainBundle] pathsForResourcesOfType:@"png" inDirectory:nil] retain]];
-	[pathsList addObjectsFromArray:[[[NSBundle mainBundle] pathsForResourcesOfType:@"jpg" inDirectory:nil] retain]];
+	[pathsList addObjectsFromArray:[[NSBundle mainBundle] pathsForResourcesOfType:@"PNG" inDirectory:nil]];
+	[pathsList addObjectsFromArray:[[NSBundle mainBundle] pathsForResourcesOfType:@"png" inDirectory:nil]];
+	[pathsList addObjectsFromArray:[[NSBundle mainBundle] pathsForResourcesOfType:@"jpg" inDirectory:nil]];
 
 	photos = [[NSArray alloc] initWithArray:pathsList];
 	
