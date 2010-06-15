@@ -272,7 +272,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>7</integer>
+									<integer>9</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -309,7 +309,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>EC40759C11C5625900072312</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>ScrollView.m</string>
+								<string>ThumbnailsView.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -317,21 +317,21 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>EC40759D11C5625900072312</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>ScrollView.m</string>
+										<string>ThumbnailsView.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EC84CBBC11C73CE900E67E10</string>
+										<string>EC84CCE711C7504A00E67E10</string>
 										<key>history</key>
 										<array>
 											<string>ECB09D1E11C5806700F61866</string>
 											<string>ECB09D2811C5809700F61866</string>
-											<string>ECB09F7511C58CBD00F61866</string>
-											<string>EC84CB4511C7381100E67E10</string>
 											<string>EC84CB4611C7381100E67E10</string>
-											<string>EC84CBB211C73CBB00E67E10</string>
 											<string>EC84CBB311C73CBB00E67E10</string>
-											<string>EC84CBB811C73CD100E67E10</string>
+											<string>EC84CC2611C7465200E67E10</string>
+											<string>EC84CCC311C74EC100E67E10</string>
+											<string>EC84CCCC11C74ECC00E67E10</string>
+											<string>EC84CCE111C74FE100E67E10</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>

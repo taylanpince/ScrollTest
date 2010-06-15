@@ -10,14 +10,16 @@
 @protocol ThumbnailsViewDelegate;
 
 @interface ThumbnailsView : UIView {
+	NSArray *thumbnails;
 	NSInteger selectedThumbIndex;
 	
 	id <ThumbnailsViewDelegate> delegate;
 }
 
+@property (nonatomic, retain) NSArray *thumbnails;
+
 @property (nonatomic, assign) id <ThumbnailsViewDelegate> delegate;
 
-- (void)loadThumbnails:(NSArray *)thumbnails;
 - (void)selectThumb:(int)thumbIndex;
 
 @end
