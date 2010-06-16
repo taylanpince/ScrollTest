@@ -18,8 +18,8 @@
 @end
 
 
-static NSUInteger PHOTO_WIDTH = 20.0;
-static NSUInteger PHOTO_HEIGHT = 14.0;
+static NSUInteger const PHOTO_WIDTH = 20.0;
+static NSUInteger const PHOTO_HEIGHT = 14.0;
 
 
 @implementation ThumbnailsView
@@ -77,12 +77,23 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 }
 
 - (void)didPanOverThumbnails:(id)sender {
-	CGPoint touchPoint = [(UIPanGestureRecognizer *)sender locationInView:self];
-	UIView *tappedView = [self hitTest:CGPointMake(touchPoint.x, self.frame.size.height / 2) withEvent:nil];
-	
-	if (tappedView != nil && tappedView != self) {
-		[self selectThumb:tappedView.tag];
-		[delegate didTapOnThumbnailWithIndex:tappedView.tag - 1];
+	switch ([(UIPanGestureRecognizer *)sender state]) {
+		case UIGestureRecognizerStateEnded: {
+			[delegate didFinishPanning];
+			
+			break;
+		}
+		default: {
+			CGPoint touchPoint = [(UIPanGestureRecognizer *)sender locationInView:self];
+			UIView *tappedView = [self hitTest:CGPointMake(touchPoint.x, self.frame.size.height / 2) withEvent:nil];
+			
+			if (tappedView != nil && tappedView != self) {
+				[self selectThumb:tappedView.tag];
+				[delegate didPanOverThumbnailWithIndex:tappedView.tag - 1];
+			}
+			
+			break;
+		}
 	}
 }
 

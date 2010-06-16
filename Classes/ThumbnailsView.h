@@ -34,4 +34,6 @@
 
 @protocol ThumbnailsViewDelegate
 - (void)didTapOnThumbnailWithIndex:(int)thumbIndex;
+- (void)didPanOverThumbnailWithIndex:(int)thumbIndex;
+- (void)didFinishPanning;
 @end

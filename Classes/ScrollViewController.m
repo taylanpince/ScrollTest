@@ -20,6 +20,9 @@
 @end
 
 
+static NSTimeInterval const HIDE_DELAY = 3.0;
+
+
 @implementation ScrollViewController
 
 @synthesize scrollView, thumbsView, photos, imageRequests;
@@ -71,6 +74,7 @@
 	imageRequests = [[NSMutableSet alloc] init];
 	activePhotoIndex = 0;
 	rotating = NO;
+	panning = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -78,6 +82,8 @@
 	
 	//[scrollView reloadDataWithNewContentSize:CGSizeMake(self.view.frame.size.width * [self.photos count], self.view.frame.size.height)];
 	[thumbsView selectThumb:1];
+	
+	[self performSelector:@selector(hideInterface) withObject:nil afterDelay:HIDE_DELAY];
 }
 
 - (void)didTapOnPhoto:(id)sender {
@@ -98,15 +104,19 @@
 
 - (void)hideInterface {
 	if (!self.navigationController.navigationBarHidden) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.5];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(transitionDidStop:finished:context:)];
-		[self.navigationController.navigationBar setAlpha:0.0];
-		[self.navigationController.toolbar setAlpha:0.0];
-		[UIView commitAnimations];
-		
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		if (panning) {
+			[self performSelector:@selector(hideInterface) withObject:nil afterDelay:HIDE_DELAY];
+		} else {
+			[UIView beginAnimations:nil context:NULL];
+			[UIView setAnimationDuration:0.5];
+			[UIView setAnimationDelegate:self];
+			[UIView setAnimationDidStopSelector:@selector(transitionDidStop:finished:context:)];
+			[self.navigationController.navigationBar setAlpha:0.0];
+			[self.navigationController.toolbar setAlpha:0.0];
+			[UIView commitAnimations];
+			
+			[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		}
 	}
 }
 
@@ -122,6 +132,9 @@
 		[self.navigationController.navigationBar setAlpha:1.0];
 		[self.navigationController.toolbar setAlpha:1.0];
 		[UIView commitAnimations];
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideInterface) object:nil];
+		[self performSelector:@selector(hideInterface) withObject:nil afterDelay:HIDE_DELAY];
 	}
 }
 
@@ -198,7 +211,7 @@
 	if (page >= [self.photos count]) {
 		return;
 	}
-	
+
 	NSString *photoPath = [self.photos objectAtIndex:page];
 	ImageRequest *fetchRequest = [[ImageRequest alloc] initWithIdentifier:[photoPath lastPathComponent] cellIndex:[NSIndexPath indexPathForRow:page inSection:0]];
 	
@@ -220,6 +233,9 @@
 		activePhotoIndex = newPhotoIndex;
 
 		[thumbsView selectThumb:activePhotoIndex + 1];
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideInterface) object:nil];
+		[self performSelector:@selector(hideInterface) withObject:nil afterDelay:HIDE_DELAY];
 	}
 
 	[self abortRequestsForOffScreenPages];
@@ -264,8 +280,6 @@
 	
 	if (imageView != nil) {
 		[imageView setImage:image];
-	} else {
-		NSLog(@"VIEW IS NOT THERE: %d", indexPath.row);
 	}
 	
 	if ([[imageRequests allObjects] containsObject:request]) {
@@ -287,7 +301,16 @@
 
 - (void)didTapOnThumbnailWithIndex:(int)thumbIndex {
 	[self goToPage:thumbIndex];
-	//[self abortRequestsForOffScreenPages];
+}
+
+- (void)didPanOverThumbnailWithIndex:(int)thumbIndex {
+	panning = YES;
+
+	[self goToPage:thumbIndex];
+}
+
+- (void)didFinishPanning {
+	panning = NO;
 }
 
 - (void)didReceiveMemoryWarning {

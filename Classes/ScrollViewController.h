@@ -20,6 +20,7 @@
 	NSUInteger activePhotoIndex;
 	
 	BOOL rotating;
+	BOOL panning;
 }
 
 @property (nonatomic, retain) ScrollView *scrollView;
