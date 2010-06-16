@@ -6,14 +6,10 @@
 //  Copyright 2010 Hippo Foundry. All rights reserved.
 //
 
-#import "ImageOperation.h"
-
-
 @protocol ImageRequestDelegate;
 
-@interface ImageRequest : NSObject <ImageOperationDelegate> {
+@interface ImageRequest : NSObject {
 	NSURLConnection *requestConnection;
-	NSOperationQueue *operationQueue;
 	NSMutableData *requestData;
 	NSInteger statusCode;
 
@@ -28,7 +24,6 @@
 }
 
 @property (nonatomic, retain) NSURLConnection *requestConnection;
-@property (nonatomic, retain) NSOperationQueue *operationQueue;
 @property (nonatomic, retain) NSMutableData *requestData;
 
 @property (nonatomic, readonly) NSString *identifier;

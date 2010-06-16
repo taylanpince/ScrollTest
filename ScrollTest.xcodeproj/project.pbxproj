@@ -147,7 +147,6 @@
 		ECB09F2911C5865400F61866 /* organized.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ECB09EA711C5865400F61866 /* organized.jpg */; };
 		ECB09F2A11C5865400F61866 /* statusboard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ECB09EA811C5865400F61866 /* statusboard.jpg */; };
 		ECB09F2B11C5865400F61866 /* Things-iPad-Screenshot-1.png in Resources */ = {isa = PBXBuildFile; fileRef = ECB09EA911C5865400F61866 /* Things-iPad-Screenshot-1.png */; };
-		ECF90C1E11C82FB800E28934 /* ImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF90C1D11C82FB800E28934 /* ImageOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -299,8 +298,6 @@
 		ECB09EA711C5865400F61866 /* organized.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = organized.jpg; sourceTree = "<group>"; };
 		ECB09EA811C5865400F61866 /* statusboard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = statusboard.jpg; sourceTree = "<group>"; };
 		ECB09EA911C5865400F61866 /* Things-iPad-Screenshot-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Things-iPad-Screenshot-1.png"; sourceTree = "<group>"; };
-		ECF90C1C11C82FB800E28934 /* ImageOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageOperation.h; sourceTree = "<group>"; };
-		ECF90C1D11C82FB800E28934 /* ImageOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,8 +317,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				ECF90C1C11C82FB800E28934 /* ImageOperation.h */,
-				ECF90C1D11C82FB800E28934 /* ImageOperation.m */,
 				EC84CD0811C7E39200E67E10 /* ImageRequest.h */,
 				EC84CD0911C7E39200E67E10 /* ImageRequest.m */,
 				1D3623240D0F684500981E51 /* ScrollTestAppDelegate.h */,
@@ -711,7 +706,6 @@
 				EC4076AF11C5633100072312 /* ScrollView.m in Sources */,
 				EC40791611C5770700072312 /* ThumbnailsView.m in Sources */,
 				EC84CD0A11C7E39200E67E10 /* ImageRequest.m in Sources */,
-				ECF90C1E11C82FB800E28934 /* ImageOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
