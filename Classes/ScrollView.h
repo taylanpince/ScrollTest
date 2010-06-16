@@ -35,4 +35,7 @@ extern NSUInteger const tagOffset;
 @protocol ScrollViewDataSource
 - (UIView *)scrollView:(ScrollView *)scrollView viewForPage:(int)page;
 - (void)scrollView:(ScrollView *)scrollView didAddPage:(int)page;
+- (void)scrollView:(ScrollView *)scrollView willBeingPinching:(CGFloat)scale;
+- (void)scrollView:(ScrollView *)scrollView didPinch:(CGFloat)scale;
+- (void)scrollView:(ScrollView *)scrollView didEndPinching:(CGFloat)scale;
 @end

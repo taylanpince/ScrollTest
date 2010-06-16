@@ -10,10 +10,8 @@ photo viewer. Currently supports:
 * Async loading of all images (supports file paths as well as urls)
 * Automated resizing in background thread
 * Local image caching for faster performance
+* Support for leaving the viewer by pinching the active photo
 
-Current memory consumption is around 15MB with a 130 image gallery. Going to
-work on improving this a bit more, but it's pretty good as is. Consumption
-doesn't grow over time, no matter how many images you have.
-
-There are still a few quirks with thumbnail browsing (on the device, it doesn't
-jump as fast as I would like it to).
+Current memory consumption is under 10MB with a 130 image gallery (usually 
+stays around 8MB). Consumption doesn't grow over time, no matter how many 
+images you have. UI performance is now at par with Apple's Photos app.

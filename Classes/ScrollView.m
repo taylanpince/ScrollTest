@@ -9,6 +9,11 @@
 #import "ScrollView.h"
 
 
+@interface ScrollView (PrivateMethods)
+- (void)didPinch:(id)sender;
+@end
+
+
 NSUInteger const tagOffset = 999;
 
 
@@ -27,12 +32,32 @@ NSUInteger const tagOffset = 999;
 		[self setScrollsToTop:NO];
 		[self setPagingEnabled:YES];
 		
+		UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(didPinch:)];
+		
+		[self addGestureRecognizer:pinchGesture];
+		
+		[pinchGesture release];
+		
 		firstVisiblePage = NSIntegerMax;
 		lastVisiblePage = NSIntegerMin;
 		pagesHidden = NO;
     }
 	
     return self;
+}
+
+- (void)didPinch:(id)sender {
+	switch ([(UIPinchGestureRecognizer *)sender state]) {
+		case UIGestureRecognizerStateBegan:
+			[dataSource scrollView:self willBeingPinching:[(UIPinchGestureRecognizer *)sender scale]];
+			break;
+		case UIGestureRecognizerStateEnded:
+			[dataSource scrollView:self didEndPinching:[(UIPinchGestureRecognizer *)sender scale]];
+			break;
+		default:
+			[dataSource scrollView:self didPinch:[(UIPinchGestureRecognizer *)sender scale]];
+			break;
+	}
 }
 
 - (UIView *)dequeueReusablePage {
@@ -103,11 +128,11 @@ NSUInteger const tagOffset = 999;
 	
 	int firstPage = MAX(0, floorf(self.contentOffset.x / self.frame.size.width));
 	int lastPage = MIN(floorf(self.contentSize.width / self.frame.size.width), floorf((self.contentOffset.x + self.frame.size.width) / self.frame.size.width));
-
+	
 	for (int pageIndex = firstPage; pageIndex <= lastPage; pageIndex++) {
 		if (firstVisiblePage > pageIndex || lastVisiblePage < pageIndex) {
 			UIView *page = [dataSource scrollView:self viewForPage:pageIndex];
-			
+
 			if (page != nil) {
 				[page setFrame:CGRectMake(pageIndex * self.frame.size.width, 0.0, self.frame.size.width - 20.0, self.frame.size.height)];
 				[page setTag:(pageIndex + tagOffset)];

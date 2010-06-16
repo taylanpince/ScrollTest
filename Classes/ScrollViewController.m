@@ -80,7 +80,7 @@ static NSTimeInterval const HIDE_DELAY = 3.0;
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	
-	//[scrollView reloadDataWithNewContentSize:CGSizeMake(self.view.frame.size.width * [self.photos count], self.view.frame.size.height)];
+	[scrollView reloadDataWithNewContentSize:CGSizeMake(self.view.frame.size.width * [self.photos count], self.view.frame.size.height)];
 	[thumbsView selectThumb:1];
 	
 	[self performSelector:@selector(hideInterface) withObject:nil afterDelay:HIDE_DELAY];
@@ -247,6 +247,34 @@ static NSTimeInterval const HIDE_DELAY = 3.0;
 	if (!decelerate) {
 		[self abortRequestsForOffScreenPages];
 	}
+}
+
+- (void)scrollView:(ScrollView *)aScrollView willBeingPinching:(CGFloat)scale {
+	[scrollView setScrollEnabled:NO];
+	[scrollView hideAllPagesExceptPage:activePhotoIndex];
+}
+
+- (void)scrollView:(ScrollView *)aScrollView didPinch:(CGFloat)scale {
+	// Assuming there will be a background parent view controller, we make the whole view's background transparent
+	// so the underlying view can be seen (same effect as in photo viewer)
+	// You can also add a rotation gesture recognizer and update the image's rotation property in a similar
+	// delegate method. That's what Apple seems to be doing in their own app
+	
+	[self.view setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:scale]];
+	[scrollView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:scale]];
+	[[scrollView viewForPage:activePhotoIndex] setTransform:CGAffineTransformMakeScale(scale, scale)];
+}
+
+- (void)scrollView:(ScrollView *)aScrollView didEndPinching:(CGFloat)scale {
+	// At this point we can check scale amount to decide whether we want to exit, or roll back to original scale
+	
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.25];
+	[[scrollView viewForPage:activePhotoIndex] setTransform:CGAffineTransformIdentity];
+	[UIView commitAnimations];
+	
+	[scrollView showAllPages];
+	[scrollView setScrollEnabled:YES];
 }
 
 - (void)abortRequestsForOffScreenPages {
