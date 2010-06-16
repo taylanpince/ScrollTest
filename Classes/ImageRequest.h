@@ -6,11 +6,14 @@
 //  Copyright 2010 Hippo Foundry. All rights reserved.
 //
 
+#import "ImageOperation.h"
+
 
 @protocol ImageRequestDelegate;
 
-@interface ImageRequest : NSObject {
+@interface ImageRequest : NSObject <ImageOperationDelegate> {
 	NSURLConnection *requestConnection;
+	NSOperationQueue *operationQueue;
 	NSMutableData *requestData;
 	NSInteger statusCode;
 
@@ -18,20 +21,21 @@
 	NSIndexPath *cellIndex;
 	CGSize targetSize;
 	
-	BOOL isActive;
+	BOOL isCancelled;
 	BOOL exactFit;
 	
 	id <ImageRequestDelegate> delegate;
 }
 
 @property (nonatomic, retain) NSURLConnection *requestConnection;
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
 @property (nonatomic, retain) NSMutableData *requestData;
 
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSIndexPath *cellIndex;
 @property (nonatomic, assign) CGSize targetSize;
 
-@property (nonatomic, assign) BOOL isActive;
+@property (nonatomic, assign) BOOL isCancelled;
 @property (nonatomic, assign) BOOL exactFit;
 
 @property (nonatomic, assign) id <ImageRequestDelegate> delegate;
@@ -44,6 +48,6 @@
 @end
 
 @protocol ImageRequestDelegate
-- (void)imageRequestDidSucceedWithImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath;
-- (void)imageRequestDidFailForCellIndex:(NSIndexPath *)indexPath;
+- (void)imageRequestDidSucceed:(ImageRequest *)request withImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath;
+- (void)imageRequestDidFail:(ImageRequest *)request forCellIndex:(NSIndexPath *)indexPath;
 @end

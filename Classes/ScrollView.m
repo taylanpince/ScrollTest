@@ -63,8 +63,10 @@ NSUInteger const tagOffset = 999;
 }
 
 - (void)reloadDataWithNewContentSize:(CGSize)size {
-    [self setContentSize:size];
-    [self reloadData];
+	if (self.contentSize.width != size.width || self.contentSize.height != size.height) {
+		[self setContentSize:size];
+		[self reloadData];
+	}
 }
 
 - (void)hideAllPagesExceptPage:(int)page {
@@ -112,6 +114,8 @@ NSUInteger const tagOffset = 999;
 				[page setHidden:pagesHidden];
 
 				[self addSubview:page];
+				
+				[dataSource scrollView:self didAddPage:pageIndex];
 			}
 		}
 	}

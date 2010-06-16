@@ -107,7 +107,7 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, PHOTO_WIDTH, PHOTO_HEIGHT)];
 		
 		[imageView setUserInteractionEnabled:YES];
-		[imageView setContentMode:UIViewContentModeScaleAspectFit];
+		[imageView setContentMode:UIViewContentModeCenter];
 		[imageView setBackgroundColor:[UIColor blackColor]];
 		[imageView setClipsToBounds:YES];
 		[imageView setTag:count];
@@ -124,7 +124,6 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 	
 	[self getThumbForIndex:0];
 	[self setNeedsLayout];
-	[self selectThumb:1];
 }
 
 - (void)getThumbForIndex:(int)thumbIndex {
@@ -140,15 +139,16 @@ static NSUInteger PHOTO_HEIGHT = 14.0;
 	
 	[thumbRequest setDelegate:self];
 	[thumbRequest setExactFit:NO];
-	[thumbRequest setTargetSize:CGSizeMake(PHOTO_WIDTH, PHOTO_HEIGHT)];
+	[thumbRequest setTargetSize:CGSizeMake(PHOTO_WIDTH * 4, PHOTO_HEIGHT * 4)];
 	[thumbRequest sendRequestForURL:[NSURL fileURLWithPath:thumbURL]];
 }
 
-- (void)imageRequestDidFailForCellIndex:(NSIndexPath *)indexPath {
+- (void)imageRequestDidFail:(ImageRequest *)request forCellIndex:(NSIndexPath *)indexPath {
 	NSLog(@"DID FAIL: %d", indexPath.row);
+	[self getThumbForIndex:(indexPath.row + 1)];
 }
 
-- (void)imageRequestDidSucceedWithImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
+- (void)imageRequestDidSucceed:(ImageRequest *)request withImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
 	[(UIImageView *)[self viewWithTag:(indexPath.row + 1)] setImage:image];
 	[self getThumbForIndex:(indexPath.row + 1)];
 }

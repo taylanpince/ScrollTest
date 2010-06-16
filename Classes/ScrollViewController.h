@@ -16,14 +16,16 @@
 	ThumbnailsView *thumbsView;
 	
 	NSArray *photos;
-	NSMutableArray *imageRequests;
+	NSMutableSet *imageRequests;
 	NSUInteger activePhotoIndex;
+	
+	BOOL rotating;
 }
 
 @property (nonatomic, retain) ScrollView *scrollView;
 @property (nonatomic, retain) ThumbnailsView *thumbsView;
 
 @property (nonatomic, readonly) NSArray *photos;
-@property (nonatomic, retain) NSMutableArray *imageRequests;
+@property (nonatomic, retain) NSMutableSet *imageRequests;
 
 @end

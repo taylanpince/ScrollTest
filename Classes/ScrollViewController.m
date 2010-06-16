@@ -15,6 +15,8 @@
 - (void)hideInterface;
 - (void)showInterface;
 - (void)transitionDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
+- (void)abortRequestsForOffScreenPages;
+- (void)abortAllRequests;
 @end
 
 
@@ -38,9 +40,7 @@
 	[self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];
 	[self setWantsFullScreenLayout:YES];
 	
-	CGSize dimensions = (UIDeviceOrientationIsPortrait(self.interfaceOrientation)) ? CGSizeMake(self.view.frame.size.width, self.view.frame.size.height) : CGSizeMake(self.view.frame.size.height, self.view.frame.size.width);
-
-	scrollView = [[ScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, dimensions.width + 20.0, dimensions.height)];
+	scrollView = [[ScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width + 20.0, self.view.frame.size.height)];
 	
 	[scrollView setDelegate:self];
 	[scrollView setDataSource:self];
@@ -54,9 +54,7 @@
 	
 	[tapGesture release];
 	
-	[scrollView reloadDataWithNewContentSize:CGSizeMake(dimensions.width * [self.photos count], dimensions.height)];
-	
-	thumbsView = [[ThumbnailsView alloc] initWithFrame:CGRectMake(0.0, 0.0, dimensions.width - 20.0, 52.0)];
+	thumbsView = [[ThumbnailsView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width - 20.0, 52.0)];
 	
 	[thumbsView setDelegate:self];
 	[thumbsView setThumbnails:self.photos];
@@ -70,12 +68,16 @@
 	[self.navigationController.toolbar setBarStyle:UIBarStyleBlackTranslucent];
 	[self.navigationController setToolbarHidden:NO animated:NO];
 	
-	imageRequests = [[NSMutableArray alloc] init];
+	imageRequests = [[NSMutableSet alloc] init];
 	activePhotoIndex = 0;
+	rotating = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
 	
-	for (int photoIndex = 0; photoIndex < [self.photos count]; photoIndex++) {
-		[imageRequests addObject:[NSNull null]];
-	}
+	//[scrollView reloadDataWithNewContentSize:CGSizeMake(self.view.frame.size.width * [self.photos count], self.view.frame.size.height)];
+	[thumbsView selectThumb:1];
 }
 
 - (void)didTapOnPhoto:(id)sender {
@@ -133,6 +135,8 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	rotating = YES;
+	
 	[scrollView setScrollEnabled:NO];
 	[scrollView hideAllPagesExceptPage:activePhotoIndex];
 }
@@ -148,6 +152,8 @@
 	[scrollView setContentOffset:CGPointMake(activePhotoIndex * scrollView.frame.size.width, 0.0)];
 	[scrollView showAllPages];
 	[scrollView setScrollEnabled:YES];
+	
+	rotating = NO;
 }
 
 - (NSArray *)photos {
@@ -181,83 +187,118 @@
 		return nil;
 	}
 	
-	[photoView setImage:[thumbsView thumbForIndex:page]];
+	if ((photoView.tag - tagOffset) != page) {
+		[photoView setImage:[thumbsView thumbForIndex:page]];
+	}
+
+	return photoView;
+}
+
+- (void)scrollView:(ScrollView *)aScrollView didAddPage:(int)page {
+	if (page >= [self.photos count]) {
+		return;
+	}
 	
 	NSString *photoPath = [self.photos objectAtIndex:page];
 	ImageRequest *fetchRequest = [[ImageRequest alloc] initWithIdentifier:[photoPath lastPathComponent] cellIndex:[NSIndexPath indexPathForRow:page inSection:0]];
 	
 	[fetchRequest setDelegate:self];
-	[fetchRequest setTargetSize:CGSizeMake(scrollView.frame.size.width - 20.0, scrollView.frame.size.height)];
+	[fetchRequest setTargetSize:CGSizeZero];
 	[fetchRequest sendRequestForURL:[NSURL fileURLWithPath:photoPath]];
-	[imageRequests replaceObjectAtIndex:page withObject:fetchRequest];
+	[imageRequests addObject:fetchRequest];
 	[fetchRequest release];
-	
-	return photoView;
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)aScrollView {
-	NSUInteger newPhotoIndex = floorf(scrollView.contentOffset.x / scrollView.frame.size.width);
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+	if (rotating) {
+		return;
+	}
 	
+	NSUInteger newPhotoIndex = floorf(scrollView.contentOffset.x / scrollView.frame.size.width);
+
 	if (activePhotoIndex != newPhotoIndex) {
 		activePhotoIndex = newPhotoIndex;
-		
+
 		[thumbsView selectThumb:activePhotoIndex + 1];
-		
-		[self hideInterface];
 	}
+
+	[self abortRequestsForOffScreenPages];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate {
+	[self hideInterface];
+	
+	if (!decelerate) {
+		[self abortRequestsForOffScreenPages];
+	}
+}
+
+- (void)abortRequestsForOffScreenPages {
+	NSMutableSet *abortedRequests = [[NSMutableSet alloc] init];
+	
+	for (ImageRequest *request in [imageRequests allObjects]) {
+		if (!request.isCancelled) {
+			UIView *pageView = [scrollView viewForPage:request.cellIndex.row];
+			
+			if (pageView == nil) {
+				[request abortConnection];
+				[abortedRequests addObject:request];
+			}
+		}
+	}
+	
+	[imageRequests minusSet:abortedRequests];
+	[abortedRequests release];
 }
 
 - (void)abortAllRequests {
-	for (int index = 0; index < [imageRequests count]; index++) {
-		if ((NSNull *)[imageRequests objectAtIndex:index] != [NSNull null]) {
-			[(ImageRequest *)[imageRequests objectAtIndex:index] abortConnection];
-			[imageRequests replaceObjectAtIndex:index withObject:[NSNull null]];
-		}
+	for (ImageRequest *request in imageRequests) {
+		[request abortConnection];
 	}
+	
+	[imageRequests removeAllObjects];
 }
 
-- (void)imageRequestDidSucceedWithImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
+- (void)imageRequestDidSucceed:(ImageRequest *)request withImage:(UIImage *)image cellIndex:(NSIndexPath *)indexPath {
 	UIImageView *imageView = (UIImageView *)[scrollView viewForPage:indexPath.row];
 	
 	if (imageView != nil) {
 		[imageView setImage:image];
+	} else {
+		NSLog(@"VIEW IS NOT THERE: %d", indexPath.row);
 	}
 	
-	if ((NSNull *)[imageRequests objectAtIndex:indexPath.row] != [NSNull null]) {
-		[imageRequests replaceObjectAtIndex:indexPath.row withObject:[NSNull null]];
+	if ([[imageRequests allObjects] containsObject:request]) {
+		[imageRequests removeObject:request];
 	}
 }
 
-- (void)imageRequestDidFailForCellIndex:(NSIndexPath *)indexPath {
+- (void)imageRequestDidFail:(ImageRequest *)request forCellIndex:(NSIndexPath *)indexPath {
 	UIImageView *imageView = (UIImageView *)[scrollView viewForPage:indexPath.row];
 	
 	if (imageView != nil) {
 		// TODO: Update loader with fail icon
 	}
 	
-	if ((NSNull *)[imageRequests objectAtIndex:indexPath.row] != [NSNull null]) {
-		[imageRequests replaceObjectAtIndex:indexPath.row withObject:[NSNull null]];
+	if ([[imageRequests allObjects] containsObject:request]) {
+		[imageRequests removeObject:request];
 	}
 }
 
 - (void)didTapOnThumbnailWithIndex:(int)thumbIndex {
 	[self goToPage:thumbIndex];
+	//[self abortRequestsForOffScreenPages];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-	[photos release];
-	
-	photos = nil;
+	[photos release], photos = nil;
 }
 
 - (void)viewDidUnload {
     [super viewDidUnload];
-	[scrollView release];
-	[thumbsView release];
-	
-	scrollView = nil;
-	thumbsView = nil;
+	[scrollView release], scrollView = nil;
+	[thumbsView release], thumbsView = nil;
 }
 
 - (void)dealloc {
